@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn Login</title>
+    <!-- Incluir o arquivo de estilo CSS -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Incluir Font Awesome para os ícones sociais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-sm">
+
+        <!-- Área para mensagens da aplicação -->
+        <div id="message-box" class="mb-4 px-4 py-2 rounded-lg text-sm text-center hidden"></div>
+
+        <div id="app-container" class="w-full">
+            <div class="w-full p-8 bg-white rounded-2xl shadow-xl space-y-6">
+                <div class="flex flex-col items-center">
+                    <img
+                        src="https://placehold.co/100x100/f3f4f6/000000?text=BurgerOn"
+                        alt="Logo BurgerOn"
+                        class="h-24 w-24 mb-4"
+                    />
+                    <h1 class="text-3xl font-bold text-gray-800">Bem-vindo(a)</h1>
+                    <p class="text-gray-500 mt-1">Faça login para continuar</p>
+                </div>
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            required
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 transition duration-150 ease-in-out sm:text-sm"
+                            placeholder="seu@email.com"
+                        />
+                    </div>
+                    <div>
+                        <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            required
+                            class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 transition duration-150 ease-in-out sm:text-sm"
+                            placeholder="••••••••"
+                        />
+                    </div>
+                    <button
+                        type="submit"
+                        class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
+                    >
+                        Entrar
+                    </button>
+                </form>
+                <div class="text-center text-sm">
+                    <a href="#" class="font-medium text-red-500 hover:text-red-600">Esqueceu a senha?</a>
+                </div>
+                <div class="relative">
+                    <div class="absolute inset-0 flex items-center">
+                        <div class="w-full border-t border-gray-300"></div>
+                    </div>
+                    <div class="relative flex justify-center text-sm">
+                        <span class="bg-white px-2 text-gray-500">ou entre com</span>
+                    </div>
+                </div>
+                <div class="space-y-3">
+                    <button
+                        type="button"
+                        class="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
+                    >
+                        <i class="fab fa-google h-4 w-4 mr-2"></i>
+                        Google
+                    </button>
+                    <button
+                        type="button"
+                        class="w-full flex items-center justify-center py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-150 ease-in-out"
+                    >
+                        <i class="fab fa-facebook-f h-4 w-4 mr-2"></i>
+                        Facebook
+                    </button>
+                </div>
+                <div class="mt-4 text-center text-sm">
+                    Não tem uma conta? <a href="cadastro.html" class="font-medium text-red-500 hover:text-red-600">Crie uma</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Incluir o arquivo de script JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

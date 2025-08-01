@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn Registro</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-sm">
+        <div id="message-box" class="mb-4 px-4 py-2 rounded-lg text-sm text-center hidden"></div>
+
+        <div id="registration-container" class="w-full p-8 bg-white rounded-2xl shadow-xl space-y-6">
+            <div class="flex flex-col items-center">
+                <img
+                    src="https://placehold.co/100x100/f3f4f6/000000?text=BurgerOn"
+                    alt="Logo BurgerOn"
+                    class="h-24 w-24 mb-4"
+                />
+                <h1 class="text-3xl font-bold text-gray-800">Crie sua conta</h1>
+                <p class="text-gray-500 mt-1">Preencha os dados abaixo</p>
+            </div>
+
+            <form id="registration-form" class="space-y-4">
+                <div>
+                    <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
+                    <input type="text" id="nome" name="nome" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="Seu nome completo">
+                </div>
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700">E-mail</label>
+                    <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="seu@email.com">
+                </div>
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700">Senha</label>
+                    <input type="password" id="password" name="password" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="••••••••">
+                </div>
+                <div>
+                    <label for="cpf" class="block text-sm font-medium text-gray-700">CPF</label>
+                    <input type="text" id="cpf" name="cpf" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="000.000.000-00">
+                </div>
+                <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-red-500 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                    Cadastrar
+                </button>
+            </form>
+            <div class="text-center text-sm">
+                <a href="login.html" class="font-medium text-red-500 hover:text-red-600">Já tem uma conta? Faça login</a>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script-registro.js"></script>
+</body>
+</html>

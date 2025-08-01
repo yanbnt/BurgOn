@@ -1,0 +1,13 @@
+/*
+ * Este arquivo CSS é para estilos adicionais, se necessário.
+ * O Tailwind CSS é importado diretamente no HTML via CDN.
+ */
+
+/*
+ * Estilos para a formatação do CPF, por exemplo.
+ */
+#cpf {
+    /* Por exemplo: ajustar a fonte ou espaçamento */
+    font-family: monospace;
+}
+

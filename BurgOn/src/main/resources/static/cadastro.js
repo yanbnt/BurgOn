@@ -17,7 +17,7 @@ registrationForm.addEventListener('submit', async (event) => {
 
     const formData = new FormData(registrationForm);
     const data = Object.fromEntries(formData.entries());
-
+    console.log('Dados do formulário:', data);
     try {
         const response = await fetch('/api/clientes/cadastrar', {
             method: 'POST',

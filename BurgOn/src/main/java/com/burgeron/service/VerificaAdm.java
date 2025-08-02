@@ -7,20 +7,19 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//import com.burgeron.model.Produto;
-import com.burgeron.repository.ProdutoRepository;
-//import com.github.javafaker.Faker;
+import com.burgeron.repository.AdminRepository;
+
 
 @Service
 @Profile("dev")
-public class CriaBancoDeDados implements CommandLineRunner{
+public class VerificaAdm implements CommandLineRunner{
     @Autowired
-    private ProdutoRepository produtoRepository;
+    private AdminRepository adminRepository;
     @Override
     @Transactional
     public void run(String... args) throws Exception{
-        if(produtoRepository.count() > 0){
-            System.out.println("Banco de dados já contém produtos, não será criado novamente.");
+        if(adminRepository.count() > 0){
+            System.out.println("Ja existem administradores cadastrados no banco de dados.");
             return;
         }
         /*        // Criação de produtos fictícios usando Faker

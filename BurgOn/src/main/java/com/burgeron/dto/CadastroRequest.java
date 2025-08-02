@@ -10,7 +10,7 @@ import javax.validation.constraints.Size;
 @Getter
 @Setter
 @NoArgsConstructor
-public class RegistroRequest {
+public class CadastroRequest {
 
     @NotBlank(message = "O nome é obrigatório.")
     private String nome;

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     const cardapioContainer = document.getElementById('cardapio-container');
     const carrinhoBtn = document.getElementById('carrinho-btn');
+    const perfilBtn = document.getElementById('perfil-btn');
     const btnHamburgueres = document.getElementById('btn-hamburgueres');
     const btnBebidas = document.getElementById('btn-bebidas');
     const btnTodos = document.getElementById('btn-todos');
@@ -63,7 +64,8 @@ document.addEventListener('DOMContentLoaded', () => {
     btnHamburgueres.addEventListener('click', () => renderCardapio('hamburguer'));
     btnBebidas.addEventListener('click', () => renderCardapio('bebida'));
     btnTodos.addEventListener('click', () => renderCardapio('todos'));
-    carrinhoBtn.addEventListener('click', () => alert("A sua próxima tela será o carrinho de compras!"));
+    carrinhoBtn.addEventListener('click', () => window.location.href = 'carrinho.html');
+    perfilBtn.addEventListener('click', () => window.location.href = 'perfil.html');
 
     // Chama a função para buscar o cardápio do backend na inicialização
     fetchCardapio();

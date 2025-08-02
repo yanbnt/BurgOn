@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn - Editar Perfil</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <header class="bg-white p-6 rounded-2xl shadow-xl flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Editar Perfil</h1>
+            <a href="perfil.html" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Voltar
+            </a>
+        </header>
+
+        <main class="bg-white p-8 rounded-2xl shadow-xl space-y-6">
+            <div id="message-box" class="mb-4 px-4 py-2 rounded-lg text-sm text-center hidden"></div>
+            
+            <form id="form-editar-perfil" class="space-y-4">
+                <input type="hidden" id="user-id" name="id">
+                
+                <!-- Informações Pessoais -->
+                <h2 class="text-xl font-bold text-gray-800">Dados Pessoais</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="nome" class="block text-sm font-medium text-gray-700">Nome</label>
+                        <input type="text" id="nome" name="nome" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" />
+                    </div>
+                    <div>
+                        <label for="celular" class="block text-sm font-medium text-gray-700">Celular</label>
+                        <input type="tel" id="celular" name="celular" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="(99) 99999-9999"/>
+                    </div>
+                </div>
+
+                <!-- Endereço -->
+                <h2 class="text-xl font-bold text-gray-800 mt-6">Endereço</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="cep" class="block text-sm font-medium text-gray-700">CEP</label>
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                            <input type="text" id="cep" name="cep" required class="flex-1 block w-full px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm" placeholder="00000-000"/>
+                            <button type="button" id="btn-buscar-cep" class="inline-flex items-center px-3 rounded-r-lg border border-l-0 border-gray-300 bg-gray-50 text-gray-500 text-sm hover:bg-gray-100">
+                                <i class="fa-solid fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Campos de endereço ocultos inicialmente -->
+                <div id="endereco-campos" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden">
+                    <div>
+                        <label for="logradouro" class="block text-sm font-medium text-gray-700">Logradouro</label>
+                        <input type="text" id="logradouro" name="logradouro" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm sm:text-sm" readonly />
+                    </div>
+                    <div>
+                        <label for="bairro" class="block text-sm font-medium text-gray-700">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm sm:text-sm" readonly />
+                    </div>
+                    <div>
+                        <label for="localidade" class="block text-sm font-medium text-gray-700">Cidade</label>
+                        <input type="text" id="localidade" name="localidade" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm sm:text-sm" readonly />
+                    </div>
+                    <div>
+                        <label for="uf" class="block text-sm font-medium text-gray-700">Estado (UF)</label>
+                        <input type="text" id="uf" name="uf" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm sm:text-sm" readonly />
+                    </div>
+                    <div>
+                        <label for="complemento" class="block text-sm font-medium text-gray-700">Complemento</label>
+                        <input type="text" id="complemento" name="complemento" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm sm:text-sm" />
+                    </div>
+                    <div>
+                        <label for="numero" class="block text-sm font-medium text-gray-700">Número</label>
+                        <input type="text" id="numero" name="numero" required class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm sm:text-sm" />
+                    </div>
+                </div>
+                
+                <button
+                    type="submit"
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-500 hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+                >
+                    <i class="fa-solid fa-save mr-2"></i>Salvar Alterações
+                </button>
+            </form>
+        </main>
+    </div>
+
+    <script src="editar-perfil.js"></script>
+</body>
+</html>

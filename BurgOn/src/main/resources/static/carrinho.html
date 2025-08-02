@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn - Carrinho</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <header class="bg-white p-6 rounded-2xl shadow-xl flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Carrinho de Compras</h1>
+            <a href="pedido.html" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Voltar ao Cardápio
+            </a>
+        </header>
+
+        <main class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Coluna principal para os itens do carrinho -->
+            <div class="md:col-span-2 bg-white p-6 rounded-2xl shadow-xl space-y-4">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Seu Pedido</h2>
+                <div id="carrinho-itens-container" class="space-y-4">
+                    <!-- Os itens do carrinho serão inseridos aqui pelo JavaScript -->
+                </div>
+            </div>
+
+            <!-- Coluna de resumo do pedido -->
+            <div class="md:col-span-1 bg-white p-6 rounded-2xl shadow-xl space-y-4 h-min">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Resumo do Pedido</h2>
+                <div class="flex justify-between text-gray-600">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">R$ 0,00</span>
+                </div>
+                <div class="flex justify-between font-bold text-lg text-gray-800">
+                    <span>Total:</span>
+                    <span id="total">R$ 0,00</span>
+                </div>
+                <button id="finalizar-pedido-btn" class="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-lg shadow-md transition duration-150">
+                    <i class="fa-solid fa-credit-card mr-2"></i>Finalizar Pedido
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <script src="carrinho.js"></script>
+</body>
+</html>

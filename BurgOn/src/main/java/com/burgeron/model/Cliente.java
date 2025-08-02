@@ -1,22 +1,24 @@
 package com.burgeron.model;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-public class Cliente {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Cliente extends Usuario {
+    private String enderecoEntrega;
+    private String telefoneContato;
+    private String preferencias;
 
-    private String nome;
-    private String email;
-    private String password;
-    private String cpf;  
-}
+    public Cliente() {} 
+    public Cliente(String nome, String email, String password, String cpf, int nivel,
+                   String enderecoEntrega, String telefoneContato, String preferencias) {
+        super(nome, email, password, cpf, nivel);
+        this.enderecoEntrega = enderecoEntrega;
+        this.telefoneContato = telefoneContato;
+        this.preferencias = preferencias;
+    }
+}  
+

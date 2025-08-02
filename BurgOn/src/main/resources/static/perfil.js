@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Dados de perfil e pedidos simulados
             const dadosPerfil = {
-                nome: "João Silva",
-                email: "joao.silva@email.com"
+                nome: localStorage.getItem('nome'),
+                email: localStorage.getItem('email')
             };
 
             const dadosPedidoAtual = {

@@ -1,24 +1,28 @@
 package com.burgeron.model;
 
 import jakarta.persistence.Entity;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Entity
+@AllArgsConstructor
 @Getter
 @Setter
 public class Cliente extends Usuario {
-    private String enderecoEntrega;
-    private String telefoneContato;
+    private String cep;
+    private String celular;
     private String preferencias;
+    private String bairro;
+    private String logradouro;
+    private String numero;
+    private String complemento;
+    private String cidade;
+    private String uf;
+
 
     public Cliente() {} 
-    public Cliente(String nome, String email, String password, String cpf, int nivel,
-                   String enderecoEntrega, String telefoneContato, String preferencias) {
-        super(nome, email, password, cpf, nivel);
-        this.enderecoEntrega = enderecoEntrega;
-        this.telefoneContato = telefoneContato;
-        this.preferencias = preferencias;
-    }
+     
 }  
 

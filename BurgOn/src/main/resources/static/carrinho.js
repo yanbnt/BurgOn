@@ -62,10 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Lógica para finalizar o pedido
-    finalizarPedidoBtn.addEventListener('click', () => {
-        alert("A sua próxima tela será o ecrã de pagamento!");
-        // Aqui você faria uma chamada POST para a API de backend para finalizar o pedido
-    });
+    finalizarPedidoBtn.addEventListener('click', () => window.location.href = 'pagamento.html');
 
     // Chamada inicial para renderizar a tela
     renderCarrinho();

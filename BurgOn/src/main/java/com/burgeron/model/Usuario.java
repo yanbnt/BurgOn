@@ -24,12 +24,5 @@ public class Usuario {
     private int idCargo; // 0 - Cliente, 1 - Cozinheiro, 2 - Administrador
 
     public Usuario() {}
-    public Usuario(String nome, String email, String password, String cpf, int idCargo) {
-        this.nome = nome;
-        this.email = email;
-        this.password = password;
-        this.cpf = cpf;
-        this.idCargo = idCargo;
-    }
 }
 

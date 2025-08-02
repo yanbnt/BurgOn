@@ -10,8 +10,5 @@ import lombok.Setter;
 public class Admin extends Usuario {
     
     public Admin() {}
-    public Admin(String nome, String email, String password, String cpf, int nivel) {
-        super(nome, email, password, cpf, nivel);
-    }
 
 }

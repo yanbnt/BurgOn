@@ -28,13 +28,24 @@ loginForm.addEventListener('submit', async (event) => {
         });
 
         const result = await response.json();
-
+        
         if (response.ok) {
             showMessage(result.message, 'success');
-            // Armazenar o token de autenticação, se existir
+            // ARMAZENAR TODOS OS DADOS NECESSÁRIOS NO LOCAL STORAGE
             localStorage.setItem('authToken', result.token);
-            // Redirecionar para a tela de pedidos após o login bem-sucedido
-            window.location.href = 'pedido.html';
+            localStorage.setItem('userId', result.userId);
+            localStorage.setItem('nome', result.nome);
+            localStorage.setItem('email', result.email);
+            localStorage.setItem('idCargo', result.idCargo); // 0 - Cliente, 1 - Cozinheiro, 2 - Administrador
+            console.log('Id:', result.idCargo);
+            //AQUI É AONDE VAMOS DIRECIONAR O USUÁRIO PARA A PÁGINA CORRETA
+            if( result.idCargo==1)
+                window.location.href = 'cozinheiro.html'; // Redirecionar para a tela do cozinheiro
+            else if( result.idCargo==2)
+                window.location.href = 'adm-entrega.html'; // Redirecionar para a tela do administrador
+            else if( result.idCargo==0)
+                window.location.href = 'pedido.html';
+            
         } else {
             showMessage(result.message || 'Erro ao fazer login. Verifique suas credenciais.', 'error');
         }

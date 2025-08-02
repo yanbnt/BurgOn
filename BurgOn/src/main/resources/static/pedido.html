@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn - Pedido</title>
+    <!-- Inclui Font Awesome para ícones -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <!-- Importa o Tailwind CSS via CDN diretamente no HTML -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <header class="bg-white p-6 rounded-2xl shadow-xl flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Cardápio BurgerOn</h1>
+            <button id="carrinho-btn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                <i class="fa-solid fa-shopping-cart mr-2"></i>Carrinho
+            </button>
+        </header>
+
+        <!-- Botões de categoria -->
+        <div class="flex justify-center space-x-4 mb-6">
+            <button id="btn-hamburgueres" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-300 transition duration-150">Hambúrgueres</button>
+            <button id="btn-bebidas" class="bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-md hover:bg-gray-300 transition duration-150">Bebidas</button>
+            <button id="btn-todos" class="bg-red-500 text-white font-bold py-2 px-4 rounded-lg shadow-md hover:bg-red-600 transition duration-150">Todos</button>
+        </div>
+
+        <main id="cardapio-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Os itens do cardápio serão inseridos aqui pelo JavaScript -->
+        </main>
+    </div>
+    
+    <!-- O script será importado do arquivo script-pedido.js -->
+    <script src="pedido.js"></script>
+</body>
+</html>

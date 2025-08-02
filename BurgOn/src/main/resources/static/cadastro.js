@@ -32,7 +32,7 @@ registrationForm.addEventListener('submit', async (event) => {
         if (response.ok) {
             showMessage(result.message, 'success');
             // Redirecionar para a tela de login após o registro bem-sucedido
-            // window.location.href = 'index.html'; 
+            window.location.href = '/login.html'; 
         } else {
             showMessage(result.message || 'Erro ao realizar o cadastro.', 'error');
         }

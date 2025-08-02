@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.bind.annotation.GetMapping;
 
 
@@ -24,10 +23,9 @@ public class ClienteController {
     private ClienteRepository clienteRepository;
 
     @GetMapping("/cadastrar")
-    public ModelAndView cadastrar() {
-        return new ModelAndView("cadastro");
+    public String cadastrar() {
+        return "cadastro.html"; // Retorna a página de cadastro
     }
-    
 
     @PostMapping("/cadastrar")
     public ResponseEntity<RegistroResponse> registrarCliente(@RequestBody RegistroRequest registroRequest) {
@@ -45,7 +43,7 @@ public class ClienteController {
         if(clienteExistente.isPresent()) {
             return ResponseEntity.badRequest().body(new RegistroResponse("Já existe um cliente cadastrado com este email."));
         }
-        
+
         clienteExistente = clienteRepository.findByCpf(registroRequest.getCpf());
         if(clienteExistente.isPresent()) {
             return ResponseEntity.badRequest().body(new RegistroResponse("CPF já cadastrado."));
@@ -63,4 +61,5 @@ public class ClienteController {
         // Se tudo correr bem, retorna uma resposta de sucesso
         return ResponseEntity.ok(new RegistroResponse("Cadastro realizado com sucesso!"));
     }
+    
 }

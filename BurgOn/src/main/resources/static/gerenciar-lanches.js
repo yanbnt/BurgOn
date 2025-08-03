@@ -84,8 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Evento para o botão de sair
     logoutBtn.addEventListener('click', () => {
-        alert('A sair do painel de administração...');
-        window.location.href = 'login.html'; // Redireciona para a tela de login do admin
+        //alert('A sair do painel de administração...');
+        window.location.href = 'gerenciar.html'; // Redireciona para a tela de login do admin
     });
 
     // Chamada inicial para renderizar a tabela

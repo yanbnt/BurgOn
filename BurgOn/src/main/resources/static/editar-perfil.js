@@ -4,10 +4,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const cepInput = document.getElementById('cep');
             const btnBuscarCep = document.getElementById('btn-buscar-cep');
             const enderecoCampos = document.getElementById('endereco-campos');
-
+            const idCargo = document.getElementById('idCargo');
+            const btnVoltar = document.getElementById('btnVoltar');
             // ID do utilizador logado (em um projeto real, seria obtido da sessão ou do token de autenticação)
             const userId = localStorage.getItem('userId');
-
+            
             // Função para mostrar mensagens de alerta
             function showMessage(text, type) {
                 messageBox.textContent = text;
@@ -25,16 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 try {
                     // A URL do endpoint deve ser ajustada para o seu backend
                     const response = await fetch('/api/clientes/editar/' + userId);
+
                     if (!response.ok) {
                         throw new Error('Erro ao buscar os dados do utilizador.');
                     }
                     const dadosPerfil = await response.json();
-                    
+                    idCargo = dadosPerfil.idCargo;
                     document.getElementById('user-id').value = dadosPerfil.id;
                     document.getElementById('nome').value = dadosPerfil.nome;
                     document.getElementById('email').value = dadosPerfil.email;
                     document.getElementById('celular').value = dadosPerfil.telefone || '';
-                    
+                
                     if (dadosPerfil.endereco) {
                         cepInput.value = dadosPerfil.endereco;
                         preencherEndereco(dadosPerfil.endereco);
@@ -114,9 +116,25 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            btnBuscarCep.addEventListener('click', buscarCep);
-            
+            btnBuscarCep.addEventListener('click', buscarCep);        
             cepInput.addEventListener('blur', buscarCep);
+            
+            // Evento para o botão de sair
+            async function verificaCargoId() {
+                if(idCargo == 0){
+                window.location.href = 'gerenciar.html'; // Redireciona para a tela de login do admin
+                }
+                else if(idCargo == 1){
+                    window.location.href = 'pedido.html'; // Redireciona para a tela do cozinheiro
+                }
+                else if(idCargo == 2){
+                    window.location.href = 'gerenciar.html'; // Redireciona para a tela do administrador
+                }
+            }
+
+            btnVoltar.addEventListener('click', (verificaCargoId) => {
+                
+            });
 
             // Chama a função para buscar os dados e preencher o formulário na inicialização
             fetchAndFillForm();

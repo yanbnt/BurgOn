@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn - Dashboard Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <header class="bg-white p-6 rounded-2xl shadow-xl flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Dashboard do Administrador</h1>
+            <div class="flex items-center space-x-4">
+                <a href="editar-perfil.html" id="perfil-btn">
+                    <button class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                        <i class="fa-solid fa-user"></i>
+                    </button>
+                </a>
+                <button id="logout-btn" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                    <i class="fa-solid fa-right-from-bracket mr-2"></i>Sair
+                </button>
+            </div>
+        </header>
+
+        <main class="bg-white p-8 rounded-2xl shadow-xl space-y-6">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Ações Rápidas</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+                <!-- Botão: Cadastrar Funcionário -->
+                <a href="gerenciar-funcionario.html" class="block">
+                    <button class="w-full flex items-center justify-center p-6 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-600 transition duration-150 transform hover:scale-105">
+                        <i class="fa-solid fa-user-plus text-3xl mr-4"></i>
+                        <span class="text-xl font-bold">Gerenciar Funcionários</span>
+                    </button>
+                </a>
+                
+                <!-- Botão: Cadastrar Produto -->
+                <a href="gerenciar-lanches.html" class="block">
+                    <button class="w-full flex items-center justify-center p-6 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-600 transition duration-150 transform hover:scale-105">
+                        <i class="fa-solid fa-burger text-3xl mr-4"></i>
+                        <span class="text-xl font-bold">Gerenciar Produtos</span>
+                    </button>
+                </button>
+                
+                <!-- Botão: Gerenciar Estoque -->
+                <a href="gerenciar-estoque.html" class="block">
+                    <button class="w-full flex items-center justify-center p-6 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition duration-150 transform hover:scale-105">
+                        <i class="fa-solid fa-box-open text-3xl mr-4"></i>
+                        <span class="text-xl font-bold">Gerenciar Estoque</span>
+                    </button>
+                </a>
+                
+                <!-- Botão: Listar Pedidos -->
+                <a href="#" class="block">
+                    <button class="w-full flex items-center justify-center p-6 bg-purple-500 text-white rounded-lg shadow-md hover:bg-purple-600 transition duration-150 transform hover:scale-105">
+                        <i class="fa-solid fa-list-check text-3xl mr-4"></i>
+                        <span class="text-xl font-bold">Listar Pedidos</span>
+                    </button>
+                </a>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const logoutBtn = document.getElementById('logout-btn');
+            const perfilBtn = document.getElementById('perfil-btn');
+
+            logoutBtn.addEventListener('click', () => {
+                alert('A sair do painel de administração...');
+                window.location.href = 'login.html'; // Redireciona para a tela de login unificada
+            });
+
+            perfilBtn.addEventListener('click', () => {
+                alert('A ir para a tela de perfil do administrador...');
+                // Em um projeto real, redirecionaria para uma tela de perfil de admin
+            });
+        });
+    </script>
+</body>
+</html>

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnHamburgueres = document.getElementById('btn-hamburgueres');
     const btnBebidas = document.getElementById('btn-bebidas');
     const btnTodos = document.getElementById('btn-todos');
-
+    const bntSair = document.getElementById('logout-btn');
     let cardapio = []; // Inicializa o cardápio como um array vazio
 
     // Função para buscar os produtos do cardápio no backend
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnTodos.addEventListener('click', () => renderCardapio('todos'));
     carrinhoBtn.addEventListener('click', () => window.location.href = 'carrinho.html');
     perfilBtn.addEventListener('click', () => window.location.href = 'perfil.html');
-
+    bntSair.addEventListener('click', () => window.location.href = 'login.html');
     // Chama a função para buscar o cardápio do backend na inicialização
     fetchCardapio();
 });

@@ -20,7 +20,7 @@ public class LoginController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    @GetMapping("api/clientes/loginSuccess")
+    @GetMapping("api/usuario/loginSuccess")
     public ModelAndView getMethodName() {
         return new ModelAndView("pedido");
     }

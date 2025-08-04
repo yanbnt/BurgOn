@@ -1,17 +1,18 @@
 package com.burgeron.model;
 
+import jakarta.persistence.DiscriminatorColumn;
+import jakarta.persistence.DiscriminatorType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
-//@MappedSuperclass
+@DiscriminatorColumn(name = "dtype", discriminatorType = DiscriminatorType.STRING)
 public class Usuario {
    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +23,14 @@ public class Usuario {
     private String password;
     private String cpf;
     private int idCargo; // 0 - Cliente, 1 - Cozinheiro, 2 - Administrador
-
+    private String cep;
+    private String celular;
+    private String bairro;
+    private String logradouro;
+    private String numero;
+    private String complemento;
+    private String cidade;
+    private String uf;
     public Usuario() {}
 }
 

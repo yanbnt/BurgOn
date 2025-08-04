@@ -2,7 +2,6 @@ package com.burgeron.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 

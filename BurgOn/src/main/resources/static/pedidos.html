@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BurgerOn - Meus Pedidos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            padding-bottom: 72px;
+            /* Espaço para a barra de navegação */
+        }
+
+        .header-fixed {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 20;
+        }
+
+        .nav-item {
+            @apply flex flex-col items-center justify-center p-2 rounded-lg text-gray-500 font-medium transition duration-150;
+        }
+
+        .nav-item.active {
+            @apply text-red-500;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <header class="bg-white p-6 rounded-2xl shadow-xl flex items-center justify-between mb-6">
+            <h1 class="text-3xl font-bold text-gray-800">Meus Pedidos</h1>
+            <a href="cliente_inicial.html"
+                class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Cardápio
+            </a>
+        </header>
+
+        <main class="bg-white p-8 rounded-2xl shadow-xl space-y-8">
+            <!-- Pedido em Andamento -->
+            <section id="pedido-em-andamento-section">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Pedido em Andamento</h2>
+                <div id="pedido-atual-card" class="bg-yellow-50 p-6 rounded-2xl shadow-sm">
+                    <!-- Conteúdo do pedido atual será inserido aqui pelo JavaScript -->
+                </div>
+            </section>
+
+            <!-- Histórico de Pedidos -->
+            <section>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">Histórico de Pedidos</h2>
+                <div id="historico-pedidos-container" class="space-y-4">
+                    <!-- Conteúdo do histórico será inserido aqui pelo JavaScript -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Barra de navegação inferior -->
+    <nav class="bottom-nav bg-white shadow-lg p-2">
+        <div class="flex justify-around space-x-2">
+            <a href="inicio.html" id="nav-inicio" class="nav-item">
+                <i class="fa-solid fa-house text-xl text-gray-500"></i>
+                <span class="text-xs mt-1">Início</span>
+            </a>
+            <button id="nav-pedidos" class="nav-item active">
+                <i class="fa-solid fa-receipt text-xl text-red-500"></i>
+                <span class="text-xs mt-1">Pedidos</span>
+            </button>
+            <a href="perfil.html" id="nav-perfil" class="nav-item">
+                <i class="fa-solid fa-user-gear text-xl text-gray-500"></i>
+                <span class="text-xs mt-1">Perfil</span>
+            </a>
+        </div>
+    </nav>
+
+    <script src="pedidos.js"></script>
+</body>
+</html>

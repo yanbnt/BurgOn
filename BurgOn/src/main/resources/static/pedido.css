@@ -1,7 +1,0 @@
-/* Importar Tailwind CSS via CDN */
-@import url('https://cdn.tailwindcss.com');
-
-/* Estilos adicionais */
-body {
-    font-family: 'Inter', sans-serif;
-}

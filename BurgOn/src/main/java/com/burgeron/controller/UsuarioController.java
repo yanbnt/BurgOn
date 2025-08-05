@@ -38,6 +38,7 @@ public class UsuarioController {
         return usuarioRepository.findById(id).orElse(null);
     }
 
+
     @PutMapping("/editar/{id}")
     public ResponseEntity<MensagemResponse> alterarusuario(@PathVariable Long id, @RequestBody UsuarioRequest usuarioRequest) {
         Usuario usuario = usuarioRepository.findById(id).orElse(null);

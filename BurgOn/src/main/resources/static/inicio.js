@@ -6,32 +6,63 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnHamburgueres = document.getElementById('btn-hamburgueres');
     const btnBebidas = document.getElementById('btn-bebidas');
     const btnTodos = document.getElementById('btn-todos');
-    const navInicio = document.getElementById('nav-inicio');
     const navPedidos = document.getElementById('nav-pedidos');
     const navPerfil = document.getElementById('nav-perfil');
-    const enderecoClienteP = document.getElementById('endereco-cliente');
+    const enderecoCliente = document.getElementById('endereco-cliente');
     const notificationBtn = document.getElementById('notification-btn');
     const notificationIcon = document.getElementById('notification-icon');
     const messageModal = document.getElementById('message-modal');
+    const telaCarrinho = document.getElementById('tela-carrinho');
+    const geraCarrinhoBtn = document.getElementById('gera-carrinho-btn');
     const modalMessageElement = document.getElementById('modal-message');
+    const carrinhoItensContainer = document.getElementById('carrinho-itens-container');
+    // Parte do carrinho
+    const finalizarPedidoBtn = document.getElementById('finalizar-pedido-btn');
+    const subtotalSpan = document.getElementById('subtotal');
+    const totalSpan = document.getElementById('total');
 
-    const dadosUsuario = {
-        endereco: "Rua do Passeio, 100"
-    };
-    enderecoClienteP.textContent = dadosUsuario.endereco;
+    // Simulação de um ID de usuário logado
+    const userId = localStorage.getItem('userId'); // Exemplo de ID, pode ser dinâmico
 
-    const cardapio = [
-        { id: 1, nome: "Hambúrguer Clássico", descricao: "Pão, carne, queijo, alface e tomate.", preco: 15.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Clássico", categoria: "hamburguer" },
-        { id: 2, nome: "Hambúrguer Bacon", descricao: "Pão, carne, queijo, bacon crocante, cebola caramelizada.", preco: 18.50, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Bacon", categoria: "hamburguer" },
-        { id: 3, nome: "Hambúrguer Veggie", descricao: "Pão integral, hambúrguer de grão-de-bico, alface, tomate, maionese vegana.", preco: 17.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Veggie", categoria: "hamburguer" },
-        { id: 7, nome: "Hambúrguer BBQ", descricao: "Carne, queijo cheddar, molho barbecue e anéis de cebola.", preco: 21.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=BBQ", categoria: "hamburguer" },
-        { id: 8, nome: "Hambúrguer Picanha", descricao: "Pão, carne de picanha, queijo provolone e molho especial.", preco: 25.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Picanha", categoria: "hamburguer" },
-        { id: 4, nome: "Batata Frita", descricao: "Porção de batatas fritas crocantes e salgadas.", preco: 8.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Batata", categoria: "acompanhamento" },
-        { id: 5, nome: "Refrigerante Cola", descricao: "Lata de refrigerante de cola.", preco: 5.50, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Refrigerante", categoria: "bebida" },
-        { id: 6, nome: "Milkshake de Chocolate", descricao: "Milkshake cremoso de chocolate.", preco: 12.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Milkshake", categoria: "bebida" },
-        { id: 9, nome: "Suco de Laranja", descricao: "Suco natural de laranja espremida na hora.", preco: 9.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Suco", categoria: "bebida" },
-        { id: 10, nome: "Cerveja Artesanal", descricao: "Cerveja lager artesanal.", preco: 14.00, imagem: "https://placehold.co/400x300/f87171/ffffff?text=Cerveja", categoria: "bebida" }
-    ];
+
+
+    // Função para buscar dados do usuário no backend e preencher o perfil
+    async function fetchAndRenderProfile() {
+        try {
+            // Simulação de chamada para o back-end
+            // A URL real deve ser ajustada para o seu endpoint
+            const response = await fetch('/api/usuario/editar/' + userId);
+            if (!response.ok) {
+                throw new Error('Erro ao buscar os dados do utilizador.');
+            }
+            const dadosPerfil = await response.json();
+            console.log('Dados do perfil:', dadosPerfil);
+            enderecoCliente.textContent = dadosPerfil.logradouro + ', ' + dadosPerfil.numero;
+
+        } catch (error) {
+            console.error('Erro:', error);
+            // Opcional: exibir uma mensagem de erro na UI
+            enderecoCliente.textContent = 'Erro ao carregar';
+        }
+    }
+
+    let cardapio = []; // Inicializa o cardápio como um array vazio
+
+    // Função para buscar os produtos do cardápio no backend
+    async function fetchCardapio() {
+        try {
+            const response = await fetch('/api/pedidos/pedidos');
+            if (!response.ok) {
+                throw new Error('Erro ao buscar o cardápio do servidor.');
+            }
+            cardapio = await response.json();
+
+            renderCardapio('todos'); // Renderiza o cardápio completo após o fetch
+        } catch (error) {
+            console.error('Erro:', error);
+            // Poderia mostrar uma mensagem de erro na UI
+        }
+    }
 
     let carrinho = [];
 
@@ -62,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (type === 'success') {
             modalIcon.className = 'fa-solid fa-check-circle text-green-500 text-3xl';
-            modalTitle.textContent = 'Sucesso';
+            modalTitle.textContent = 'Item Adicionado';
         } else if (type === 'error') {
             modalIcon.className = 'fa-solid fa-xmark-circle text-red-500 text-3xl';
             modalTitle.textContent = 'Erro';
@@ -74,14 +105,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
+
     function renderCardapio(categoria) {
         cardapioContainer.innerHTML = '';
         const itensFiltrados = cardapio.filter(item => categoria === 'todos' || item.categoria === categoria);
-
         itensFiltrados.forEach(item => {
             const itemHtml = `
                         <div class="bg-white rounded-2xl shadow-lg overflow-hidden flex flex-col transform transition duration-300 hover:scale-105">
-                            <img src="${item.imagem}" alt="${item.nome}" class="w-full h-48 object-cover">
+                            <img src="${item.imagemUrl}" alt="${item.nome}" class="w-full h-48 object-cover">
                             <div class="p-4 flex-grow">
                                 <h3 class="text-xl font-bold text-gray-800">${item.nome}</h3>
                                 <p class="text-gray-600 mt-1 text-sm">${item.descricao}</p>
@@ -104,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.adicionarAoCarrinho = (itemId) => {
         const itemExistente = carrinho.find(item => item.id === itemId);
         const item = cardapio.find(i => i.id === itemId);
-
+        //carrinhoAba.style.display = 'block';
         if (itemExistente) {
             itemExistente.quantidade += 1;
         } else {
@@ -114,15 +145,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         showModalMessage(`Adicionado ${item.nome}: ${item.descricao}`);
         updateCarrinhoAba();
+        renderCarrinho();
     };
 
-    btnHamburgueres.addEventListener('click', () => renderCardapio('hamburguer'));
-    btnBebidas.addEventListener('click', () => renderCardapio('bebida'));
-    btnTodos.addEventListener('click', () => renderCardapio('todos'));
-
-    //navInicio.addEventListener('click', () => { window.location.href = 'cliente_inicial.html'; });
-    navPedidos.addEventListener('click', () => { window.location.href = 'pedidos.html'; });
-    navPerfil.addEventListener('click', () => { window.location.href = 'perfil.html'; });
 
     if (novaNotificacao) {
         notificationIcon.classList.add('text-red-500', 'animate-shake');
@@ -132,6 +157,89 @@ document.addEventListener('DOMContentLoaded', () => {
         notificationIcon.classList.remove('text-red-500', 'animate-shake');
     });
 
+    // Lógica para o botão de carrinho
+    function renderCarrinho() {
+        carrinhoItensContainer.innerHTML = '';
+        let subtotal = 0;
+
+        carrinho.forEach(item => {
+            const itemHtml = `
+                        <div class="flex items-center p-4 bg-gray-50 rounded-lg shadow-sm">
+                            <div class="flex-grow">
+                                <h3 class="text-lg font-bold text-gray-800">${item.nome}</h3>
+                                <p class="text-gray-600">R$ ${item.preco.toFixed(2)}</p>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="btn-quantidade-menos bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold w-8 h-8 rounded-full transition duration-150" data-item-id="${item.id}">-</button>
+                                <span class="text-lg font-bold text-gray-800 w-6 text-center">${item.quantidade}</span>
+                                <button class="btn-quantidade-mais bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold w-8 h-8 rounded-full transition duration-150" data-item-id="${item.id}">+</button>
+                            </div>
+                            <button class="btn-remover bg-red-500 hover:bg-red-600 text-white font-bold w-8 h-8 rounded-full ml-4 transition duration-150" data-item-id="${item.id}">
+                                <i class="fa-solid fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `;
+            carrinhoItensContainer.innerHTML += itemHtml;
+            subtotal += item.preco * item.quantidade;
+        });
+
+        subtotalSpan.textContent = `R$ ${subtotal.toFixed(2)}`;
+        totalSpan.textContent = `R$ ${subtotal.toFixed(2)}`; // Sem frete ou taxas por enquanto
+    }
+
+    // Lógica para lidar com os botões de quantidade e remoção
+    carrinhoItensContainer.addEventListener('click', (event) => {
+        const target = event.target;
+        const itemId = target.closest('[data-item-id]').dataset.itemId;
+        const item = carrinho.find(i => i.id === parseInt(itemId));
+
+
+        if (!item) return;
+
+        if (target.closest('.btn-quantidade-mais')) {
+            item.quantidade++;
+        } else if (target.closest('.btn-quantidade-menos')) {
+            if (item.quantidade > 1) {
+                item.quantidade--;
+            }
+            else {
+                carrinho = carrinho.filter(i => i.id !== parseInt(itemId));
+            }
+        } else if (target.closest('.btn-remover')) {
+            carrinho = carrinho.filter(i => i.id !== parseInt(itemId));
+        }
+        if (carrinho.length == 0) {
+            telaCarrinho.style.display = 'none';
+            updateCarrinhoAba(); // chama o carrinho de volta 
+        }
+        renderCarrinho();
+    });
+
+    // Eventos com click
+    finalizarPedidoBtn.addEventListener('click', () => window.location.href = 'pagamento.html');
+    btnHamburgueres.addEventListener('click', () => renderCardapio('hamburguer'));
+    btnBebidas.addEventListener('click', () => renderCardapio('bebida'));
+    btnTodos.addEventListener('click', () => renderCardapio('todos'));
+    navPedidos.addEventListener('click', () => { window.location.href = 'pedidos.html'; });
+    navPerfil.addEventListener('click', () => { window.location.href = 'perfil.html'; });
+    geraCarrinhoBtn.addEventListener('click', () => {
+        if (carrinho.length === 0) {
+            showModalMessage('O carrinho está vazio!', 'error');
+            return;
+        }
+        telaCarrinho.style.display = 'block';
+        renderCarrinho();
+    });
+
+    window.addEventListener('click', (evento) => {
+        if (evento.target === telaCarrinho) { //Ao clicar fora da tela ele fecha
+            telaCarrinho.style.display = 'none';
+            
+        }
+    });
+
     renderCardapio('todos');
+    fetchCardapio();
     updateCarrinhoAba();
+    fetchAndRenderProfile();
 });

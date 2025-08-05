@@ -40,11 +40,11 @@ loginForm.addEventListener('submit', async (event) => {
             console.log('Id:', result.idCargo);
             //AQUI É AONDE VAMOS DIRECIONAR O USUÁRIO PARA A PÁGINA CORRETA
             if( result.idCargo==1)
-                window.location.href = 'pedido.html'; // Redirecionar para a tela do cozinheiro
+                window.location.href = 'cozinheiro.html'; // Redirecionar para a tela do cozinheiro
             else if( result.idCargo==2)
                 window.location.href = 'gerenciar.html'; // Redirecionar para a tela do administrador
             else if( result.idCargo==0)
-                window.location.href = 'pedido.html';
+                window.location.href = 'inicio.html';
             
         } else {
             showMessage(result.message || 'Erro ao fazer login. Verifique suas credenciais.', 'error');

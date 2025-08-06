@@ -12,21 +12,18 @@ import jakarta.persistence.OneToMany;
 import lombok.Getter;
 import lombok.Setter;
 
-@Entity
 @Getter
 @Setter
+@Entity
 @JsonIgnoreProperties({"ingredienteProduto"})
-public class Produto {
+public class Ingrediente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    
-    private String nome;
-    private String descricao;
-    private Double preco;
-    private String imagemUrl;
-    private String categoria; // Exemplo: "Hambúrguer", "Bebida", etc.
-    
-    @OneToMany(mappedBy = "produto")
+    Integer id;
+    String nome;
+    int quantidade;
+    int quantidadeMinima; 
+
+    @OneToMany(mappedBy = "ingrediente")
     private List<IngredienteProduto> ingredienteProduto;
 }

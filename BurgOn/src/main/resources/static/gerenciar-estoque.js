@@ -1,22 +1,40 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const formIngrediente = document.getElementById('form-ingrediente');
     const ingredientesTableBody = document.getElementById('ingredientes-table-body');
     const viewListaBtn = document.getElementById('view-lista-btn');
     const viewGraficoBtn = document.getElementById('view-grafico-btn');
     const estoqueListaView = document.getElementById('estoque-lista-view');
     const estoqueGraficoView = document.getElementById('estoque-grafico-view');
     const messageBox = document.getElementById('message-box');
+
+    const ingredienteIdInput = document.getElementById('ingrediente-id');
+    const nomeIngredienteInput = document.getElementById('nome');
+    const quantidadeIngredienteInput = document.getElementById('quantidade');
+    const quantidadeMinima = document.getElementById('quantidadeMinima');
+    const formTitle = document.getElementById('form-title');
+    const submitBtn = document.getElementById('submit-btn');
+    const cancelarBtn = document.getElementById('cancelar-btn');
     
-    let ingredientes = [
-        { id: 1, nome: "Carne", quantidade: 25, unidade: "kg" },
-        { id: 2, nome: "Pão", quantidade: 150, unidade: "un" },
-        { id: 3, nome: "Queijo", quantidade: 30, unidade: "kg" },
-        { id: 4, nome: "Alface", quantidade: 50, unidade: "un" },
-        { id: 5, nome: "Tomate", quantidade: 15, unidade: "kg" },
-        { id: 6, nome: "Bacon", quantidade: 10, unidade: "kg" }
-    ];
+    var ingredientes = [];
+
+    async function fetchAndRenderProfile() {
+        try {
+            const response = await fetch('/api/ingredientes/consultar');
+            if (!response.ok) {
+                throw new Error('Erro ao buscar os dados do utilizador.');
+            }
+            ingredientes = await response.json();
+            console.log('Dados ingrediente', ingredientes);
+            toggleView('lista');
+
+        } catch (error) {
+            console.error('Erro:', error);
+        }
+    }
+
 
     let estoqueChart = null;
-
+    
     function showMessage(text, type) {
         messageBox.textContent = text;
         messageBox.className = `mb-4 px-4 py-2 rounded-lg text-sm text-center ${type === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
@@ -34,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const statusText = ingrediente.quantidade < 20 ? 'Baixo' : (ingrediente.quantidade < 50 ? 'Médio' : 'Alto');
 
             const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-50';
             row.innerHTML = `
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ingrediente.nome} (${ingrediente.unidade})</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ingrediente.quantidade}</td>
@@ -44,12 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
                             </span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                            <input type="number" id="quantidade-input-${ingrediente.id}" class="w-16 px-2 py-1 border rounded-lg text-sm text-center" value="1">
-                            <button class="text-green-600 hover:text-green-900" onclick="adicionarQuantidade(${ingrediente.id})">
-                                <i class="fas fa-plus"></i>
+                            <button class="text-indigo-600 hover:text-indigo-900" onclick="editarIngrediente(${ingrediente.id})">
+                                <i class="fas fa-pencil-alt"></i> Alterar
                             </button>
-                            <button class="text-red-600 hover:text-red-900" onclick="removerQuantidade(${ingrediente.id})">
-                                <i class="fas fa-minus"></i>
+                            <button class="text-red-600 hover:text-red-900" onclick="excluirIngrediente(${ingrediente.id})">
+                                <i class="fas fa-trash-alt"></i> Excluir
                             </button>
                         </td>
                     `;
@@ -120,36 +136,94 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    window.adicionarQuantidade = (id) => {
-        const ingrediente = ingredientes.find(i => i.id === id);
-        const quantidadeInput = document.getElementById(`quantidade-input-${id}`);
-        const quantidade = parseInt(quantidadeInput.value) || 0;
+    formIngrediente.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const formData = new FormData(formIngrediente);
+        const ingredienteData = Object.fromEntries(formData.entries());
 
-        if (ingrediente && quantidade > 0) {
-            ingrediente.quantidade += quantidade;
-            showMessage(`${quantidade} unidades adicionadas para ${ingrediente.nome}.`, 'success');
-            renderIngredientesTable();
-        }
-    };
-
-    window.removerQuantidade = (id) => {
-        const ingrediente = ingredientes.find(i => i.id === id);
-        const quantidadeInput = document.getElementById(`quantidade-input-${id}`);
-        const quantidade = parseInt(quantidadeInput.value) || 0;
-
-        if (ingrediente && quantidade > 0) {
-            ingrediente.quantidade -= quantidade;
-            if (ingrediente.quantidade < 0) {
-                ingrediente.quantidade = 0;
+        if (ingredienteIdInput.value) {
+            const index = ingredientes.findIndex(i => i.id === parseInt(ingredienteIdInput.value));
+            if (index !== -1) {
+                ingredientes[index] = { ...ingredientes[index], ...ingredienteData, quantidade: parseInt(ingredienteData.quantidade) };
+                showMessage(`Ingrediente ${ingredienteData.nome} alterado com sucesso!`, 'success');
             }
-            showMessage(`${quantidade} unidades removidas para ${ingrediente.nome}.`, 'success');
-            renderIngredientesTable();
+        } else {
+            /*const newId = ingredientes.length > 0 ? Math.max(...ingredientes.map(i => i.id)) + 1 : 1;
+            const novoIngrediente = { id: newId, ...ingredienteData, quantidade: parseInt(ingredienteData.quantidade) };
+            ingredientes.push(novoIngrediente);
+            showMessage(`Ingrediente ${novoIngrediente.nome} adicionado com sucesso!`, 'success');*/
+            try {
+                const response = await fetch('/api/ingredientes/cadastrar', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(ingredienteData),
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const novoIngrediente = { 
+                        id: result.id, 
+                        ...ingredienteData, 
+                        quantidade: parseInt(ingredienteData.quantidade),
+                        quantidadeMinima: parseInt(ingredienteData.quantidadeMinima)
+                    };
+                    ingredientes.push(novoIngrediente);
+                    showMessage(`Ingrediente ${novoIngrediente.nome} adicionado com sucesso!`, 'success');
+                } else {
+                    showMessage(result.message || 'Erro ao realizar o cadastro.', 'error');
+                }
+
+            } catch (error) {
+                console.error('Erro:', error);
+                showMessage('Ocorreu um erro na ligação com o servidor.', 'error');
+            }
+        }
+
+        formIngrediente.reset();
+        resetFormState();
+        toggleView('lista');
+    });
+
+    window.editarIngrediente = (id) => {
+        const ingrediente = ingredientes.find(i => i.id === id);
+        if (ingrediente) {
+            formTitle.textContent = 'Alterar Ingrediente';
+            submitBtn.textContent = 'Atualizar Quantidade';
+            cancelarBtn.classList.remove('hidden');
+            ingredienteIdInput.value = ingrediente.id;
+            nomeIngredienteInput.value = ingrediente.nome;
+            quantidadeIngredienteInput.value = ingrediente.quantidade;
+            unidadeIngredienteInput.value = ingrediente.unidade;
         }
     };
+
+    window.excluirIngrediente = (id) => {
+        if (confirm('Tem certeza de que deseja excluir este ingrediente?')) {
+            ingredientes = ingredientes.filter(ingrediente => ingrediente.id !== id);
+            showMessage('Ingrediente excluído com sucesso!', 'success');
+            toggleView('lista');
+        }
+    };
+
+    cancelarBtn.addEventListener('click', () => {
+        formIngrediente.reset();
+        resetFormState();
+    });
+
+    function resetFormState() {
+        formTitle.textContent = 'Adicionar/Alterar Ingrediente';
+        submitBtn.textContent = 'Adicionar Ingrediente';
+        cancelarBtn.classList.add('hidden');
+        ingredienteIdInput.value = '';
+    }
 
     viewListaBtn.addEventListener('click', () => toggleView('lista'));
     viewGraficoBtn.addEventListener('click', () => toggleView('grafico'));
 
     renderIngredientesTable();
+    fetchAndRenderProfile();
     toggleView('lista');
 });

@@ -6,13 +6,13 @@ import lombok.Setter;
 @Getter
 @Setter
 public class IngredienteResponse {
-    private Long idIngrediente;
+    private Long id;
     private String nome;
     private int quantidade;
     private int quantidadeMinima;
 
-    public IngredienteResponse(Long idIngrediente, String nome, int quantidade) {
-        this.idIngrediente = idIngrediente;
+    public IngredienteResponse(Long id, String nome, int quantidade) {
+        this.id = id;
         this.nome = nome;
         this.quantidade = quantidade;
     }

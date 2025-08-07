@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const row = document.createElement('tr');
             row.innerHTML = `
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ingrediente.nome} (${ingrediente.unidade})</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${ingrediente.nome}</td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${ingrediente.quantidade}</td>
                         <td class="px-6 py-4 whitespace-nowrap">
                             <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${statusClass} text-white">
@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
         estoqueChart = new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: ingredientes.map(i => `${i.nome} (${i.unidade})`),
+                labels: ingredientes.map(i => `${i.nome}`),
                 datasets: [{
                     label: 'Quantidade em Estoque',
                     data: ingredientes.map(i => i.quantidade),
@@ -196,7 +196,6 @@ document.addEventListener('DOMContentLoaded', () => {
             ingredienteIdInput.value = ingrediente.id;
             nomeIngredienteInput.value = ingrediente.nome;
             quantidadeIngredienteInput.value = ingrediente.quantidade;
-            unidadeIngredienteInput.value = ingrediente.unidade;
         }
     };
 

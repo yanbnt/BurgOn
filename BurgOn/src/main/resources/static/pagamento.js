@@ -5,12 +5,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const formPagamento = document.getElementById('form-pagamento');
     const finalizarCompraBtn = document.getElementById('finalizar-compra-btn');
     const messageBox = document.getElementById('message-box');
+    
+    // Carrega os dados do carrinho a partir do localStorage
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 
-    // Dados simulados do carrinho
-    const carrinho = [
-        { nome: "Hambúrguer Clássico", preco: 15.00, quantidade: 2 },
-        { nome: "Batata Frita", preco: 8.00, quantidade: 1 }
-    ];
+    // Se o carrinho estiver vazio, exibe uma mensagem e redireciona para a página inicial
+    if (carrinho.length === 0) {
+        resumoPedidoContainer.innerHTML = '<p class="text-center text-gray-600">Seu carrinho está vazio.</p>';
+        finalizarCompraBtn.disabled = true;
+        finalizarCompraBtn.classList.add('opacity-50', 'cursor-not-allowed');
+        showMessage('Seu carrinho está vazio. Redirecionando para o cardápio...', 'error');
+        setTimeout(() => window.location.href = 'inicio.html', 3000);
+        return; // Interrompe a execução do resto do script
+    }
 
     // Função para mostrar mensagens de alerta
     function showMessage(text, type) {
@@ -126,6 +133,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 const result = await response.json();
+                // Limpa o carrinho no localStorage após o sucesso do pedido
+                localStorage.removeItem('carrinho');
                 showMessage(result.message, 'success');
                 // Redireciona para a tela de acompanhamento do pedido
                 // window.location.href = 'acompanhamento_pedido.html';

@@ -14,13 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const messageModal = document.getElementById('message-modal');
     const telaCarrinho = document.getElementById('tela-carrinho');
     const geraCarrinhoBtn = document.getElementById('gera-carrinho-btn');
+    const fecharCarrinhoBtn = document.getElementById('fechar-cardapio'); // Botão para fechar o carrinho
     const modalMessageElement = document.getElementById('modal-message');
     const carrinhoItensContainer = document.getElementById('carrinho-itens-container');
     // Parte do carrinho
     const finalizarPedidoBtn = document.getElementById('finalizar-pedido-btn');
     const subtotalSpan = document.getElementById('subtotal');
-    const totalSpan = document.getElementById('total');
-
+    
     // Simulação de um ID de usuário logado
     const userId = localStorage.getItem('userId'); // Exemplo de ID, pode ser dinâmico
 
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Função para buscar os produtos do cardápio no backend
     async function fetchCardapio() {
         try {
-            const response = await fetch('/api/pedidos/pedidos');
+            const response = await fetch('/api/produto/consultar'); // CORREÇÃO: Endpoint correto para buscar o cardápio.
             if (!response.ok) {
                 throw new Error('Erro ao buscar o cardápio do servidor.');
             }
@@ -64,9 +64,17 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    let carrinho = [];
+    // Carrega o carrinho do localStorage ao iniciar, ou inicializa um array vazio.
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || [];
 
     const novaNotificacao = true;
+
+    // Função central para atualizar o estado do carrinho (UI e localStorage)
+    function updateCarrinhoState() {
+        renderCarrinho();
+        updateCarrinhoAba();
+        localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    }
 
     function updateCarrinhoAba() {
         const totalItens = carrinho.reduce((sum, item) => sum + item.quantidade, 0);
@@ -144,8 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         showModalMessage(`Adicionado ${item.nome}: ${item.descricao}`);
-        updateCarrinhoAba();
-        renderCarrinho();
+        updateCarrinhoState();
     };
 
 
@@ -184,7 +191,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         subtotalSpan.textContent = `R$ ${subtotal.toFixed(2)}`;
-        totalSpan.textContent = `R$ ${subtotal.toFixed(2)}`; // Sem frete ou taxas por enquanto
     }
 
     // Lógica para lidar com os botões de quantidade e remoção
@@ -209,17 +215,21 @@ document.addEventListener('DOMContentLoaded', () => {
             carrinho = carrinho.filter(i => i.id !== parseInt(itemId));
         }
         if (carrinho.length == 0) {
-            telaCarrinho.style.display = 'none';
-            updateCarrinhoAba(); // chama o carrinho de volta 
+            telaCarrinho.style.display = 'none'; // Esconde o modal se o carrinho ficar vazio
         }
-        renderCarrinho();
+        updateCarrinhoState();
     });
 
     // Eventos com click
-    finalizarPedidoBtn.addEventListener('click', () => window.location.href = 'pagamento.html');
+    finalizarPedidoBtn.addEventListener('click', () => {
+        // O localStorage já está atualizado pela função updateCarrinhoState,
+        // então apenas redirecionamos para a tela de pagamento.
+        window.location.href = 'pagamento.html';
+    });
     btnHamburgueres.addEventListener('click', () => renderCardapio('hamburguer'));
     btnBebidas.addEventListener('click', () => renderCardapio('bebida'));
     btnTodos.addEventListener('click', () => renderCardapio('todos'));
+    fecharCarrinhoBtn.addEventListener('click', () => { telaCarrinho.style.display = 'none'; });
     navPedidos.addEventListener('click', () => { window.location.href = 'pedidos.html'; });
     navPerfil.addEventListener('click', () => { window.location.href = 'perfil.html'; });
     geraCarrinhoBtn.addEventListener('click', () => {
@@ -240,6 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderCardapio('todos');
     fetchCardapio();
-    updateCarrinhoAba();
+    updateCarrinhoState(); // Renderiza o estado inicial do carrinho e da aba
     fetchAndRenderProfile();
 });

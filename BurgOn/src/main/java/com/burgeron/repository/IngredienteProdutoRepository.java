@@ -12,6 +12,8 @@ import java.util.List;
 
 @Repository
 public interface IngredienteProdutoRepository extends JpaRepository<IngredienteProduto, Long>{
+    void deleteByProdutoId(Long produtoId);
+
     @Query("SELECT NEW com.burgeron.dto.IngredienteResponse(ip.ingrediente.id, ip.ingrediente.nome, ip.quantidade) " +
               "FROM IngredienteProduto ip "+ 
               "WHERE ip.produto.id = :produtoId")

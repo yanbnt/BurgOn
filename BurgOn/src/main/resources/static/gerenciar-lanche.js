@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const formProduto = document.getElementById('form-produto');
+    const confirmModal = document.getElementById('confirm-modal');
     const produtosTableBody = document.getElementById('produtos-table-body');
     const logoutBtn = document.getElementById('logout-btn');
     const produtoIdInput = document.getElementById('produto-id');
@@ -15,6 +16,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Dados simulados de produtos
     let produtos = [];
+
+    /**
+     * Mostra um modal de confirmação customizado e retorna uma Promise.
+     * A Promise resolve para `true` se o usuário confirmar, e `false` se cancelar.
+     * @param {string} message - A mensagem a ser exibida no modal.
+     * @param {string} title - O título do modal.
+     * @returns {Promise<boolean>}
+     */
+    function showConfirmModal(message = 'Você tem certeza?', title = 'Confirmação') {
+        return new Promise(resolve => {
+            const modalTitle = confirmModal.querySelector('#modal-title');
+            const modalMessage = confirmModal.querySelector('#modal-message');
+            const confirmBtn = confirmModal.querySelector('#modal-confirm-btn');
+            const cancelBtn = confirmModal.querySelector('#modal-cancel-btn');
+
+            modalTitle.textContent = title;
+            modalMessage.textContent = message;
+
+            confirmModal.classList.remove('hidden');
+
+            const onConfirm = () => {
+                confirmModal.classList.add('hidden');
+                resolve(true);
+            };
+
+            const onCancel = () => {
+                confirmModal.classList.add('hidden');
+                resolve(false);
+            };
+
+            confirmBtn.onclick = onConfirm;
+            cancelBtn.onclick = onCancel;
+        });
+    }
+
     async function fetchAndRenderProdutos() {
         try {
             const response = await fetch('/api/produto/consultar');
@@ -167,21 +203,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Converte a lista de ingredientes selecionados para JSON para enviar
         //produtoData.ingredientes = JSON.stringify(ingredientes);
-         produtoData.ingredientes = ingredientes;
+        produtoData.ingredientes = ingredientes;
 
         // Remove a descrição de texto livre, se ainda existir no formulário
         delete produtoData.descricao;
 
         if (produtoIdInput.value) {
-            const index = produtos.findIndex(p => p.id === parseInt(produtoIdInput.value));
-            if (index !== -1) {
-                produtos[index] = { ...produtos[index], ...produtoData, preco: parseFloat(produtoData.preco) };
-                showMessage(`Produto ${produtoData.nome} alterado com sucesso!`, 'success');
-            }
-        } else {
-            
+            // Atualiza o produto existente
             try {
-                console.log("Produto data",produtoData);
+                const response = await fetch(`/api/produto/editar/${produtoData.id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(produtoData),
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    const novoProduto = {
+                        id: result.id,
+                        ...produtoData,
+                        preco: parseFloat(produtoData.preco),
+                    };
+                    const index = produtos.findIndex(p => p.id === parseInt(produtoIdInput.value));
+                    if (index !== -1) {
+                        produtos[index] = { ...produtos[index], ...produtoData, preco: parseFloat(produtoData.preco) };
+                        showMessage(`Produto ${produtoData.nome} alterado com sucesso!`, 'success');
+                    }
+                } else {
+                    showMessage(result.message || 'Erro ao realizar o cadastro.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showMessage('Ocorreu um erro na ligação com o servidor.', 'error');
+            }
+        }
+        else {
+            try {
                 const response = await fetch('/api/produto/cadastrar', {
                     method: 'POST',
                     headers: {
@@ -189,33 +247,24 @@ document.addEventListener('DOMContentLoaded', () => {
                     },
                     body: JSON.stringify(produtoData),
                 });
-
                 const result = await response.json();
-
                 if (response.ok) {
-                    const novoProduto = { 
-                        id: result.id, 
-                        ...produtoData, 
+                    const novoProduto = {
+                        id: result.id,
+                        ...produtoData,
                         preco: parseFloat(produtoData.preco),
-                        };
+                    };
                     produtos.push(novoProduto);
                     showMessage(`Produto ${novoProduto.nome} adicionado com sucesso!`, 'success');
                 } else {
                     showMessage(result.message || 'Erro ao realizar o cadastro.', 'error');
                 }
-
             } catch (error) {
                 console.error('Erro:', error);
                 showMessage('Ocorreu um erro na ligação com o servidor.', 'error');
             }
         }
-
-        //formProduto.reset();
-        //produtoIdInput.value = '';
         submitBtn.textContent = 'Cadastrar Produto';
-        //ingredientes = []; // Limpa os ingredientes selecionados
-        //renderProdutoIngredientes(); // Atualiza a lista de ingredientes no formulário
-        //renderProdutosTable();
     });
 
     window.editarProduto = (id) => {
@@ -240,17 +289,33 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.excluirProduto = (id) => {
-        if (confirm('Tem certeza de que deseja excluir este produto?')) {
-            produtos = produtos.filter(produto => produto.id !== id);
-            renderProdutosTable();
-            showMessage('Produto excluído com sucesso!', 'success');
+    window.excluirProduto = async (id) => {
+        const confirmed = await showConfirmModal('Tem certeza de que deseja excluir este produto? Esta ação não pode ser desfeita.', 'Confirmar Exclusão');
+        if (confirmed) {
+            try {
+                const response = await fetch(`/api/produto/excluir/${id}`, {
+                    method: 'DELETE',
+                });
+                const result = await response.json();
+                if (response.ok) {
+                    // Apenas atualize a UI se a exclusão no backend for bem-sucedida.
+                    produtos = produtos.filter(produto => produto.id !== id);
+                    renderProdutosTable();
+                    showMessage(result.message || 'Produto excluído com sucesso!', 'success');
+                }
+                else {
+                    showMessage(result.message || 'Erro ao excluir o produto.', 'error');
+                }
+            } catch (error) {
+                console.error('Erro:', error);
+                showMessage('Ocorreu um erro na ligação com o servidor.', 'error');
+            }
         }
     };
 
     logoutBtn.addEventListener('click', () => {
-        alert('A sair do painel de administração...');
-        window.location.href = 'login_adm.html'; // Redireciona para a tela de login do admin
+        //alert('A sair do painel de administração...');
+        window.location.href = 'gerenciar.html'; // Redireciona para a tela de login do admin
     });
 
     // Event listeners para os botões de adicionar ingrediente

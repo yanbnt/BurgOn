@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btnBuscarCep = document.getElementById('btn-buscar-cep');
     const enderecoCampos = document.getElementById('endereco-campos');
     const idCargo = document.getElementById('idCargo');
+    const btnVoltar = document.getElementById('bntVoltar');
 
     // ID do utilizador logado (em um projeto real, seria obtido da sessão ou do token de autenticação)
     const userId = localStorage.getItem('userId');
@@ -68,11 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
         const idCargoNumero = parseInt(idCargo, 10);
 
         if (idCargoNumero === 1) {
-            window.location.href = 'pedido.html'; // Redireciona para a tela do cozinheiro
+            window.location.href = 'perfil.html'; // Redireciona para a tela do cozinheiro
         } else if (idCargoNumero === 2) {
             window.location.href = 'gerenciar.html'; // Redireciona para a tela do administrador
         } else if (idCargoNumero === 0) {
-            window.location.href = 'pedido.html'; // Redireciona para a tela do cliente
+            window.location.href = 'perfil.html'; // Redireciona para a tela do cliente
         } else {
             // Opcional: Adicionar um caso para lidar com IDs de cargo desconhecidos
             console.error('ID do cargo não reconhecido:', idCargo);
@@ -141,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btnBuscarCep.addEventListener('click', buscarCep);
     cepInput.addEventListener('blur', buscarCep);
     document.getElementById('bntVoltar').addEventListener('click', verificaIdVoltar);
-
+    
     
 
 

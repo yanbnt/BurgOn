@@ -3,8 +3,11 @@ package com.burgeron.controller;
 import java.util.List;
 import java.util.Optional;
 
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,13 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.burgeron.dto.MensagemResponse;
 import com.burgeron.dto.ProdutoRequest;
+import com.burgeron.dto.IngredienteResponse;
 import com.burgeron.dto.ProdutoResponse;
 import com.burgeron.model.Ingrediente;
 import com.burgeron.model.IngredienteProduto;
 import com.burgeron.model.Produto;
 import com.burgeron.repository.IngredienteProdutoRepository;
 import com.burgeron.repository.ProdutoRepository;
+import com.burgeron.service.ProdutoService;
+
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
 
 
 @RestController
@@ -30,17 +40,70 @@ public class ProdutoController {
     @Autowired
     IngredienteProdutoRepository ingredienteProdutoRepository;
     
+
     @GetMapping("/consultar")
     public List<ProdutoResponse> listarProdutos() {
-        List<ProdutoResponse> listaProdutos =  produtoRepository.findAllResponse();
+        // 1. Busca todos os produtos com seus ingredientes em uma única consulta para evitar o problema N+1.
+        List<Produto> produtos = produtoRepository.findAllWithIngredients();
+        
+        // 2. Mapeia as entidades `Produto` para `ProdutoResponse` DTOs em memória.
+        return produtos.stream().map(produto -> {
+            // Mapeia o produto principal
+            ProdutoResponse response = new ProdutoResponse(
+                produto.getId(),
+                produto.getNome(),
+                produto.getDescricao(),
+                produto.getPreco(),
+                produto.getImagemUrl(),
+                produto.getCategoria()
+            );
+            // Mapeia a lista de ingredientes associados
+            List<IngredienteResponse> ingredienteResponses = produto.getIngredienteProduto().stream()
+                .map(ingredienteProduto -> new IngredienteResponse(
+                    ingredienteProduto.getIngrediente().getId(),
+                    ingredienteProduto.getIngrediente().getNome(),
+                    ingredienteProduto.getQuantidade()))
+                .collect(Collectors.toList());
+            response.setIngredientes(ingredienteResponses);
+            return response;
+        }).collect(Collectors.toList());
+    }
 
-        listaProdutos.stream().forEach(
-            produto -> {
-                produto.setIngredientes(ingredienteProdutoRepository.findIngredientesAndQuantitiesByProdutoId(produto.getId()));
-            }
-        );
+    @Transactional
+    @DeleteMapping("/excluir/{id}")
+    public ResponseEntity<MensagemResponse> excluirProduto(@PathVariable Long id){
+        ingredienteProdutoRepository.deleteByProdutoId(id);
+        produtoRepository.deleteById(id);
+        return ResponseEntity.ok(new MensagemResponse("Produto excluído com sucesso!"));
+    }
+    
 
-        return listaProdutos;
+    @Transactional
+    @PutMapping("/editar/{id}")
+    public ResponseEntity<MensagemResponse> alterarProduto(@PathVariable Long id, @RequestBody ProdutoRequest produtoRequest) {
+        Produto produto = produtoRepository.findById(id).orElse(null);
+        if (produto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new MensagemResponse("Produto não encontrado."));
+        }
+
+        produto.setNome(produtoRequest.getNome());
+        produto.setPreco(produtoRequest.getPreco());
+        produto.setImagemUrl(produtoRequest.getImagem());
+        produto.setCategoria(produtoRequest.getCategoria());
+        produto.setDescricao(ProdutoService.criaDescricao(produtoRequest.getIngredientes()));
+        
+        ingredienteProdutoRepository.deleteByProdutoId(id);
+        
+        // 2. Adiciona as novas associações de ingredientes.
+        for (Ingrediente ingrediente : produtoRequest.getIngredientes()) {
+            IngredienteProduto ingredienteProduto = new IngredienteProduto();
+            ingredienteProduto.setProduto(produto);
+            ingredienteProduto.setIngrediente(ingrediente);
+            ingredienteProduto.setQuantidade(ingrediente.getQuantidade());
+            ingredienteProdutoRepository.save(ingredienteProduto);
+        }
+
+        return ResponseEntity.ok(new MensagemResponse("Produto atualizado com sucesso."));
     }
 
     @PostMapping("/cadastrar")
@@ -59,23 +122,17 @@ public class ProdutoController {
         if(produtoExistente.isPresent()) {
             return ResponseEntity.badRequest().body(new MensagemResponse("Produto já cadastrado."));
         }
-        IngredienteProduto ingredienteProduto = new IngredienteProduto();
+
         Produto novoProduto = new Produto();
         novoProduto.setNome(produtoRequest.getNome());
         novoProduto.setPreco(produtoRequest.getPreco());
         novoProduto.setImagemUrl(produtoRequest.getImagem());
         novoProduto.setCategoria(produtoRequest.getCategoria());
-        StringBuilder descricao = new StringBuilder();
-        //
-        for (Ingrediente ingrediente : produtoRequest.getIngredientes()) {
-            descricao.append(ingrediente.getNome());
-            descricao.append(", ");
-        }
-        novoProduto.setDescricao(descricao.toString());
+        novoProduto.setDescricao(ProdutoService.criaDescricao(produtoRequest.getIngredientes()));
         novoProduto = produtoRepository.save(novoProduto);
         
         for (Ingrediente ingrediente : produtoRequest.getIngredientes()) {
-            ingredienteProduto = new IngredienteProduto();
+            IngredienteProduto ingredienteProduto = new IngredienteProduto();
             ingredienteProduto.setIngrediente(ingrediente);
             ingredienteProduto.setProduto(novoProduto);
             ingredienteProduto.setQuantidade(ingrediente.getQuantidade());

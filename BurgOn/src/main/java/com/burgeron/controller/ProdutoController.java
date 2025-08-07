@@ -1,6 +1,5 @@
 package com.burgeron.controller;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +19,6 @@ import com.burgeron.model.Produto;
 import com.burgeron.repository.IngredienteProdutoRepository;
 import com.burgeron.repository.ProdutoRepository;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -34,22 +32,16 @@ public class ProdutoController {
     
     @GetMapping("/consultar")
     public List<ProdutoResponse> listarProdutos() {
-        List<ProdutoResponse> listaProdutos = new ArrayList<>(); 
-        ProdutoResponse produtoResponse;
-        List<Produto> produtos = produtoRepository.findAll();
-        for (Produto produto : produtos) {
-            produtoResponse = new ProdutoResponse();
-            produtoResponse.setId(produto.getId());
-            produtoResponse.setNome(produto.getNome());
-            produtoResponse.setDescricao(produto.getDescricao());
-            produtoResponse.setImagem(produto.getImagemUrl());
-            produtoResponse.setIngredientes(ingredienteProdutoRepository.findIngredientesByProdutoId(produto.getId()));
-            produtoResponse.setPreco(produto.getPreco());
-            listaProdutos.add(produtoResponse);
-        } 
+        List<ProdutoResponse> listaProdutos =  produtoRepository.findAllResponse();
+
+        listaProdutos.stream().forEach(
+            produto -> {
+                produto.setIngredientes(ingredienteProdutoRepository.findIngredientesAndQuantitiesByProdutoId(produto.getId()));
+            }
+        );
+
         return listaProdutos;
     }
-    
 
     @PostMapping("/cadastrar")
     public ResponseEntity<MensagemResponse> registraProduto(@RequestBody ProdutoRequest produtoRequest) {

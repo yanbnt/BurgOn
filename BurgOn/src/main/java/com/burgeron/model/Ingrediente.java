@@ -19,7 +19,7 @@ import lombok.Setter;
 public class Ingrediente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer id;
+    Long id;
     String nome;
     int quantidade;
     int quantidadeMinima; 

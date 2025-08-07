@@ -22,5 +22,4 @@ public class IngredienteProduto {
     @ManyToOne
     @JoinColumn(name = "id_ingrediente")
     private Ingrediente ingrediente;
-    
 }

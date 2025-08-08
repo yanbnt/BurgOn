@@ -20,4 +20,7 @@ public interface ProdutoRepository extends JpaRepository<Produto, Long> {
      */
     @Query("SELECT DISTINCT p FROM Produto p LEFT JOIN FETCH p.ingredienteProduto ip LEFT JOIN FETCH ip.ingrediente")
     List<Produto> findAllWithIngredients();
+
+    @Query("SELECT p FROM Produto p LEFT JOIN FETCH p.ingredienteProduto ip LEFT JOIN FETCH ip.ingrediente WHERE p.id = :id")
+    Optional<Produto> findByIdWithIngredients(Long id);
 } 

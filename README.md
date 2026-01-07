@@ -1,92 +1,104 @@
-Projeto BurgerOn
-Visão Geral do Projeto
-Este é o back-end para o sistema de hamburgueria BurgerOn, desenvolvido para o curso superior de Tecnologia em Análise e Desenvolvimento de Sistemas da FAETERJ-RIO. O objetivo é criar um sistema que permita aos clientes navegar pelo cardápio, realizar pedidos, efetuar pagamentos online e acompanhar o status dos seus pedidos em tempo real, desde a confirmação até à entrega.
+# BurgOn — Sistema para Hamburgueria
 
-Tecnologias Utilizadas
-O projeto é dividido em duas partes principais:
+Aplicação web para gestão de uma hamburgueria, com fluxo completo de catálogo, carrinho/pagamento e administração de produtos, ingredientes e usuários. Backend em Spring Boot (REST + JPA/MySQL) e frontend estático em `resources/static`.
 
-Front-end
-HTML: Estrutura das páginas da web.
+## Visão Geral
+- Clientes podem navegar pelos produtos, montar pedidos e finalizar pagamento.
+- Administração gerencia produtos, ingredientes/estoque e perfis de usuários.
+- API REST com DTOs e relacionamentos mapeados em JPA.
 
-CSS/Tailwind CSS: Estilização da interface, garantindo um design moderno e responsivo.
+## Principais Recursos
+- Autenticação básica de usuário (token simulado na resposta de login).
+- Usuários: cadastro com validação (e-mail/CPF), busca e edição de perfil/endereço.
+- Produtos: cadastro, edição, exclusão e listagem com ingredientes, preço, imagem e categoria.
+- Ingredientes: cadastro e listagem; controle de quantidade e quantidade mínima.
+- Pedidos: criação a partir dos itens, cálculo de total, status inicial "Recebido", código único e data/hora.
+- Páginas estáticas para início, login, cadastro, carrinho, pagamento, pedidos, perfil e telas de gestão.
 
-JavaScript: Lógica de interação do utilizador, chamadas à API e manipulação do DOM.
+## Stack Técnica
+- Java 17, Spring Boot 3.5 (Web Services, Data JPA, DevTools, Thymeleaf)
+- Hibernate Validator, Lombok
+- MySQL Connector/J (persistência em MySQL)
 
-Back-end
-Spring Boot: Framework principal para o desenvolvimento da API REST.
+## Endpoints (Resumo)
+```
+POST   /api/login                         # Autenticação
+POST   /api/usuario/cadastrar             # Cadastro de usuário
+GET    /api/usuario/editar/{id}           # Buscar usuário por ID
+PUT    /api/usuario/editar/{id}           # Editar usuário
 
-Java: Linguagem de programação.
+GET    /api/produto/consultar             # Listar produtos (com ingredientes)
+POST   /api/produto/cadastrar             # Cadastrar produto
+PUT    /api/produto/editar/{id}           # Editar produto
+DELETE /api/produto/excluir/{id}          # Excluir produto
 
-Maven: Ferramenta de gestão de dependências.
+GET    /api/ingredientes/consultar        # Listar ingredientes
+POST   /api/ingredientes/cadastrar        # Cadastrar ingrediente
 
-Lombok: Para reduzir o boilerplate (código repetitivo) nas classes DTO e de modelo.
+POST   /api/pedidos/finalizar             # Finalizar/criar pedido
+```
 
-H2 Database: Banco de dados em memória para desenvolvimento e testes.
+## Configuração
+As principais propriedades estão em `BurgOn/src/main/resources/application.properties`:
 
-JPA/Hibernate: Para a camada de persistência de dados.
+```
+spring.profiles.active=dev
+spring.jpa.hibernate.ddl-auto=update
+spring.datasource.url=jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/burger-on
+spring.datasource.username=${DB_USERNAME:root}
+spring.datasource.password=${DB_PASSWORD:root}
+spring.jpa.show-sql=true
+```
 
-Estrutura do Projeto
-A estrutura de ficheiros e pastas do projeto Spring Boot está organizada por pacotes, conforme as boas práticas de arquitetura em camadas:
+Variáveis de ambiente suportadas: `DB_HOST`, `DB_PORT`, `DB_USERNAME`, `DB_PASSWORD`.
 
-src/main/java
-└── com
-    └── burgeron
-        ├── controller
-        │   ├── AuthController.java
-        │   └── CardapioController.java
-        ├── dto
-        │   ├── LoginRequest.java
-        │   ├── LoginResponse.java
-        │   ├── RegistroRequest.java
-        │   └── RegistroResponse.java
-        ├── model
-        │   └── ItemCardapio.java
-        ├── repository
-        │   └── ItemCardapioRepository.java
-        └── service
-            └── CardapioService.java
+## Como Rodar (Windows)
+Pré-requisitos: JDK 17, MySQL em execução, Maven (ou usar o wrapper).
 
-Endpoints da API (Back-end)
-A API REST do projeto expõe os seguintes endpoints:
+1) Criar o banco de dados:
+```sql
+CREATE DATABASE `burger-on` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
 
-POST /api/auth/login: Realiza a autenticação do utilizador.
+2) (Opcional) Definir variáveis de ambiente no PowerShell:
+```powershell
+$env:DB_HOST="localhost"
+$env:DB_PORT="3306"
+$env:DB_USERNAME="root"
+$env:DB_PASSWORD="root"
+```
 
-POST /api/clientes/cadastrar: Regista um novo cliente no sistema.
+3) Executar a aplicação com o Maven Wrapper:
+```powershell
+cd BurgOn
+./mvnw.cmd spring-boot:run
+```
 
-GET /api/cardapio: Lista todos os itens do cardápio.
+Aplicação padrão em: http://localhost:8080
 
-Ficheiros de Banco de Dados
-O projeto utiliza um script SQL para criar a tabela item_cardapio e inserir os dados iniciais. Este script é executado automaticamente pelo Spring Boot na inicialização da aplicação, desde que esteja no diretório correto.
+Arquivos estáticos (frontend) em: `BurgOn/src/main/resources/static`.
 
-src/main/resources/cardapio_data.sql
+## Estrutura do Projeto (resumo)
+```
+BurgOn/
+    src/main/java/com/burgeron/
+        controller/  # Endpoints REST (Produto, Ingrediente, Pedido, Usuario, Login)
+        dto/         # DTOs de requisição e resposta
+        model/       # Entidades JPA (Produto, Ingrediente, Pedido, Usuario, etc.)
+        repository/  # Repositórios Spring Data JPA
+        service/     # Regras de negócio (PedidoService, etc.)
+    src/main/resources/
+        application.properties
+        static/      # HTML/CSS/JS das telas do cliente e administração
+```
 
-Como Inicializar o Projeto
-Para executar o projeto, siga estes passos:
+## Próximos Passos Sugeridos
+- Trocar token simulado por autenticação JWT real.
+- Completar listagem/consulta de pedidos no `PedidoController`.
+- Implementar baixa de estoque por pedido e alertas de mínimo.
+- Documentar API com OpenAPI/Swagger.
+- Adicionar testes automatizados.
 
-Pré-requisitos:
+---
 
-Java Development Kit (JDK) 17 ou superior.
-
-Maven.
-
-Uma IDE como IntelliJ IDEA, VS Code ou Eclipse.
-
-Configuração do Banco de Dados:
-
-Certifique-se de que o ficheiro cardapio_data.sql está no diretório src/main/resources.
-
-Execução da Aplicação:
-
-Abra o projeto na sua IDE.
-
-Execute a classe principal da sua aplicação Spring Boot (por exemplo, BurgeronApplication.java).
-
-Aceder ao Front-end:
-
-Com a aplicação em execução, aceda aos ficheiros estáticos pelo navegador, por exemplo:
-
-http://localhost:8080/index.html (Tela de Login)
-
-http://localhost:8080/registro.html (Tela de Registro)
-
-http://localhost:8080/pedido.html (Tela de Pedido)
+Projeto criado para fins educacionais e práticos de gestão de hamburguerias.
